@@ -165,10 +165,12 @@ Route::post('/send_quotation', function (Request $request) {
         // Send email to the specified sender email
         $senderEmail = $request->input('sender_email');
         $senderEmail = empty($senderEmail) ? "info@maasgloballtd.com" : $senderEmail;
+        $fromName = env('MAIL_FROM_NAME'); // MAIL_FROM_NAME
+        $fromEmail = env('MAIL_FROM_ADDRESS'); // MAIL_FROM_ADDRESS
         if ($senderEmail) {
-            \Mail::raw($message, function($mail) use ($senderEmail, $request) {
+            \Mail::raw($message, function($mail) use ($senderEmail, $request, $fromEmail, $fromName) {
                 $mail->to($senderEmail)
-                    ->from($request->input('email'), $request->input('name'))
+                    ->from($fromEmail, $fromName)
                     ->subject('New Quote Request from ' . $request->input('company'));
             });
         }
